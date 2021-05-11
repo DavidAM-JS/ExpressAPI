@@ -6,8 +6,8 @@ const booksResources = express.Router();
 
 booksResources.get('/', booksController.getAll);
 booksResources.get('/:guid', booksController.getByGuid);
-booksResources.post('/', booksValidation.createBook, booksController.createBook);
-booksResources.put('/:guid', booksValidation.updateBook, booksController.updateBook);
+booksResources.post('/', booksValidation.validateBook, booksController.createBook);
+booksResources.put('/:guid', booksValidation.validateBook, booksController.updateBook);
 booksResources.delete('/:guid', booksController.deleteBook);
 
 module.exports = booksResources;

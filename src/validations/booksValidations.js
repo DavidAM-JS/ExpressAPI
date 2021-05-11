@@ -1,31 +1,31 @@
 const { check, validationResult} = require('express-validator');
 
-const createBook = [
+const validateBook = [
   check('title').exists()
-    .withMessage('Title can not be empty!')
+    .withMessage('The title can not be empty')
     .bail().isString()
-    .withMessage('Title contains invalid characters!'),
+    .withMessage('The title contains invalid characters'),
   check('author').exists()
-    .withMessage('Author can not be empty!')
+    .withMessage('There are invalid characters in author name')
     .bail().isString()
-    .withMessage('Author name contains invalid characters!'),
+    .withMessage('There are invalid characters in author name'),
   check('year').exists()
-    .withMessage('Year can not be empty!')
+    .withMessage('The year can not be empty')
     .bail().isNumeric()
-    .withMessage('Year must be a number!')
+    .withMessage('The year has to be a number')
     .bail().custom((value) => {
       const currentYear = new Date().getFullYear();
-      if (value > currentYear || value < 1455) throw new Error('Year must be greater than 1454 and not from the future!');
+      if (value > currentYear || value < 1455) throw new Error('The book year has to be greater than 1454 and smaller from the current Date');
       return true;
     }),
   check('tags').exists()
-    .withMessage('Tags required')
+    .withMessage('Some tags are required')
     .bail().isArray()
-    .withMessage('Tags must be an array')
+    .withMessage('The tags have to be an array')
     .bail().custom((arr) => arr.length > 0)
-    .withMessage('Tags array must have at least one element')
+    .withMessage('The array of tags must contain at least one element')
     .bail().custom((arr) => arr.every(item => typeof item === 'string'))
-    .withMessage('Tags must be an array of strings'),
+    .withMessage('The tags must be an array of strings'),
   (request, response, next) => {
     const errors = validationResult(request);
     if (!errors.isEmpty()) return response.status(400).json(errors);
@@ -33,42 +33,6 @@ const createBook = [
   },
 ];
 
-const updateBook = [
-
-  check('title').exists()
-    .withMessage('Title required')
-    .bail().isString()
-    .withMessage('Title must be a string'),
-
-  check('author').exists()
-    .withMessage('Author required')
-    .bail().isString()
-    .withMessage('Author must be a string'),
-
-  check('year').exists()
-    .withMessage('Year required')
-    .bail().isNumeric()
-    .withMessage('Year must be a number')
-    .bail().custom((value) => value > 1454 && value <= new Date().getFullYear())
-    .withMessage('Invalid year'),
-
-  check('tags').exists()
-  .withMessage('Tags required')
-    .bail().isArray()
-    .withMessage('Tags must be an array')
-    .bail().custom((arr) => arr.length > 0)
-    .withMessage('Tags array must have at least one element')
-    .bail().custom((arr) => arr.every(item => typeof item === 'string'))
-    .withMessage('Tags must be an array of strings'),
-
-  (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.status(400).json(errors);
-  return next();
-},
-];
-
 module.exports = {
-  createBook,
-  updateBook,
+  validateBook,
 };
